@@ -15,6 +15,9 @@ module.exports = function ( tz, ts )
         time.tzset ( tz );
         return localtime ( Math.round ( ts / 1000 ) );
     }
-    catch ( e ) {}
+    catch ( e )
+    {
+        console.log ( e );
+    }
 };
 
