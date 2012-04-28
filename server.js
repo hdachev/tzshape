@@ -41,7 +41,7 @@ require ( "http" ).createServer
 
         var time        = Date.now (),
             timezone    = db.query ( lat, lon ) || null,
-            local       = timezone && localtime ( time, timezone ),
+            local       = timezone && localtime ( timezone, time ),
             data        = timezone && { timezone : timezone, localtime : local };
 
             ////    Respond.
