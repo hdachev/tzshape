@@ -1,7 +1,10 @@
 
 
 var url = require ( 'url' ),
-    db  = require ( './index' );
+    db  = require ( './index' ),
+
+    localtime = require ( './localtime' );
+
 
 require ( "http" ).createServer
 (
@@ -36,8 +39,10 @@ require ( "http" ).createServer
 
             ////    Query.
 
-        var time = Date.now (),
-            data = db.query ( lat, lon ) || null;
+        var time        = Date.now (),
+            timezone    = db.query ( lat, lon ) || null,
+            local       = timezone && localtime ( time, timezone ),
+            data        = timezone && { timezone : timezone, localtime : local };
 
             ////    Respond.
 
