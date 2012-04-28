@@ -1,5 +1,6 @@
 
 var fs = require ( "fs" ),
+    _  = require ( "underscore" ),
 
     INPUT  = "./data/tz_world.json",
     OUTPUT = "./data/tz_world.json.list";
@@ -38,5 +39,5 @@ while (( entry = data.pop () ))
             console.log ( entry.properties.TZID );
         }
 
-        ws.write ( JSON.stringify ( entry ) + "\n" );
+        ws.write ( JSON.stringify ({ poly : _.flatten ( entry.geometry.coordinates ), data : entry.properties.TZID }) + "\n" );
     }

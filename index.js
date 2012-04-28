@@ -116,8 +116,8 @@ function index ( data )
                 ok ++;
 
                 data = JSON.parse ( line );
-                g = data.geometry.coordinates;
-                p = data.properties.TZID;
+                g = data.poly;
+                p = data.data;
 
                 if ( g.length && p && p !== "uninhabited" )
                 {
@@ -125,12 +125,15 @@ function index ( data )
                     if ( !( ok % 50 ) )
                         console.log ( 'OK!', ok, bad );
                 }
+
+                else
+                    throw new Error ( "What?" );
             }
             catch ( e )
             {
                 bad ++;
 
-                console.log ( 'BAD!', ok, bad, e );
+                console.log ( 'BAD!', line, e, ok, bad );
                 if ( bad > 50 )
                     throw new Error ( "Too much corrupt data." );
             }
