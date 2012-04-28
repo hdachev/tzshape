@@ -12,25 +12,32 @@ var Lazy = require ( "lazy" ),
     zlib = require ( "zlib" ),
     data;
 
-http.get({  host: 's3.amazonaws.com',
-            path: '/tznode/tz_world.json.list.gz',
-            port: 80,
-            headers: { 'accept-encoding': 'gzip,deflate' } })
-.on('response', function(response) {
-  switch (response.headers['content-encoding']) {
-    // or, just use zlib.createUnzip() to handle both cases
-    case 'gzip':
-      data = new Lazy ( response.pipe(zlib.createGunzip()) );
-      break;
-    case 'deflate':
-      data = new Lazy ( response.pipe(zlib.createInflate()) );
-      break;
-    default:
-      data = new Lazy ( response );
-      break;
-  }
+http.get
+({
+    host    : 's3.amazonaws.com',
+    path    : '/tznode/tz_world.json.list.gz',
+    port    : 80,
+    headers :
+    {
+        'Accept-Encoding' : 'gzip,deflate'
+    }
+})
+.on ( 'response', function ( response )
+{
+    switch ( response.headers [ 'content-encoding' ] )
+    {
+        case 'gzip':
+            data = new Lazy ( response.pipe ( zlib.createGunzip () ) );
+            break;
+        case 'deflate':
+            data = new Lazy ( response.pipe ( zlib.createInflate () ) );
+            break;
+        default:
+            data = new Lazy ( response );
+            break;
+    }
 
-  start ();
+    start ();
 });
 
 
