@@ -65,7 +65,8 @@ exports.query = function ( lat, lon )
 var Lazy = require ( "lazy" ),
     http = require ( "http" ),
     zlib = require ( "zlib" ),
-    data;
+    data,
+    time = Date.now ();
 
 console.log ( "Retrieving and indexing data ..." );
 
@@ -101,7 +102,7 @@ http.get
         delete exports.loading;
 
         quad.stats ();
-        console.log ( "READY!" );
+        console.log ( "READY! Indexing took", Date.now () - time, "ms" );
     });
 
     index ( data );
