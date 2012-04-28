@@ -3,8 +3,16 @@
     ////    Note that data is LON/LAT, not lat/lon.
 
 var time = Date.now (),
-    quad = new ( require ( "./lib/shapequadtree" ).ShapeQuadTree ) ( -180, -90, 180, 90, 4 );
+    quad = new ( require ( "./lib/shapequadtree" ).Index ) ( -180, -90, 180, 90, 4 );
     quad.verbose = true;
+
+    geom = require ( "./lib/geom" ),
+    dist2poly = geom.dist2poly;
+
+
+    ////    Run tests.
+
+require ( "./test" );
 
 
     ////    Export the query method.
@@ -58,6 +66,8 @@ var Lazy = require ( "lazy" ),
     http = require ( "http" ),
     zlib = require ( "zlib" ),
     data;
+
+console.log ( "Retrieving and indexing data ..." );
 
 http.get
 ({
@@ -167,83 +177,4 @@ function kmRadius ( lon, lat, r )
     ];
 }
 
-
-    ////    Poly dist.
-
-function dist2poly ( x, y, geom )
-{
-    var i, n = geom.length,
-        min, d;
-
-    for ( i = 0; i < n; i += 2 )
-    {
-        d = dist2seg
-        (
-            x, y,
-            geom [ i ], geom [ i + 1 ],
-            geom [ ( i + 2 ) % n ], geom [ ( i + 3 ) % 2 ]
-        );
-
-        if ( d && !( min < d ) )
-            min = d;
-    }
-
-    return min || null;
-}
-
-function dist2seg ( x, y, x1, y1, x2, y2 )
-{
-    var dx = x2 - x1,
-        dy = y2 - y1,
-        u,
-        x, y;
-
-    if ( !dx && !dy )
-        u = 0;
-    else
-        u = ( ( x - x1 ) * dx + ( y - y1 ) * dy ) / ( dx * dx + dy * dy );
-
-    if ( u < 0 )
-    {
-        x -= x1;
-        y -= y1;
-    }
-    else if ( u > 1 )
-    {
-        x -= x2;
-        y -= y2;
-    }
-    else
-    {
-        x -= x1 + u * dx;
-        y -= y1 + u * dy;
-    }
-
-    return Math.sqrt ( x * x + y * y );
-}
-
-/*
-public static double distanceToSegment(Point2D p1, Point2D p2, Point2D p3) {
-
-	final double xDelta = p2.getX() - p1.getX();
-	final double yDelta = p2.getY() - p1.getY();
-
-	if ((xDelta == 0) && (yDelta == 0)) {
-	    throw new IllegalArgumentException("p1 and p2 cannot be the same point");
-	}
-
-	final double u = ((p3.getX() - p1.getX()) * xDelta + (p3.getY() - p1.getY()) * yDelta) / (xDelta * xDelta + yDelta * yDelta);
-
-	final Point2D closestPoint;
-	if (u < 0) {
-	    closestPoint = p1;
-	} else if (u > 1) {
-	    closestPoint = p2;
-	} else {
-	    closestPoint = new Point2D.Double(p1.getX() + u * xDelta, p1.getY() + u * yDelta);
-	}
-
-	return closestPoint.distance(p3);
-}
-*/
 
