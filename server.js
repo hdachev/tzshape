@@ -1,19 +1,15 @@
 
 
 var url = require ( 'url' ),
-    // db = { query : function () { return null; } };
-    db = require ( './index' );
-
-
-    ////    Listen for requests.
+    db  = require ( './index' );
 
 require ( "http" ).createServer
 (
     function ( req, res )
     {
         var data = url.parse ( req.url, true ),
-            x    = Number ( data.query.lon ),
-            y    = Number ( data.query.lat );
+            lon  = Number ( data.query.lon ),
+            lat  = Number ( data.query.lat );
 
             ////    Validate.
 
@@ -31,7 +27,7 @@ require ( "http" ).createServer
             return;
         }
 
-        if ( !( x >= -180 && x <= 180 && y >= -90 && y <= 90 ) )
+        if ( !( lon >= -180 && lon <= 180 && lat >= -90 && lat <= 90 ) )
         {
             res.statusCode = 400;
             res.end ( "Bad request." );
@@ -41,17 +37,17 @@ require ( "http" ).createServer
             ////    Query.
 
         var time = Date.now (),
-            data = db.query ( [ x, y ] ) || [];
+            data = db.query ( lat, lon ) || null;
 
-        data = data.map ( function ( entry )
-        {
-            return entry.data;
-        });
+            ////    Respond.
 
         res.setHeader ( "Content-Type", "application/json" );
-        res.end ( JSON.stringify ( { data : data, progress : db.progress, ready : db.ready, time : Date.now () - time } ) );
+        res.end ( JSON.stringify ( { data : data, loading : db.loading, time : Date.now () - time } ) );
     }
 )
-.listen ( process.env.PORT || 8181 );
+.listen
+(
+    process.env.PORT || 8181
+);
 
 
