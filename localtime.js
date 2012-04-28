@@ -4,7 +4,7 @@ var time;
 
 try
 {
-    var time = require ( "time" );
+    time = require ( "time" );
 }
 catch ( e ) {}
 
